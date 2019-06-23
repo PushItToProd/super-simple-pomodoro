@@ -1,10 +1,10 @@
+import logging
 from datetime import timedelta
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject
-
-import logging
+from playsound import playsound
 
 
 def get_logger():
@@ -28,6 +28,7 @@ LABEL_FONT = "44"
 WORK_DURATION = 25 * 60
 BREAK_DURATION = 5 * 60
 LONG_BREAK_DURATION = 30 * 60
+DONE_SOUND = "/usr/share/sounds/ubuntu/notifications/Amsterdam.ogg"
 
 
 class Timer(GObject.GObject):
@@ -67,7 +68,7 @@ class Timer(GObject.GObject):
 
     def do_done(self):
         print("Timer.do_done - removing timeout")
-        if GObject.source_remove(self.timeout):
+        if self.timeout is not None and GObject.source_remove(self.timeout):
             self.timeout = None
 
     def __str__(self):
@@ -133,6 +134,7 @@ class MainWindow(BigLabelButtonWindow):
 
     def on_timer_done(self, timer):
         self.set_label("Done!")
+        playsound(DONE_SOUND)
 
     def start_timer(self, duration):
         """
