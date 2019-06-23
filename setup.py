@@ -15,8 +15,7 @@ setup(
         'console_scripts': ['pomodoro=pomodoro:main']
     },
     install_requires=[
-        'vext',
-        'vext.gi',
+        'PyGObject',
         'playsound',
     ],
 )
