@@ -67,7 +67,7 @@ class Timer(GObject.GObject):
         return remaining
 
     def do_done(self):
-        print("Timer.do_done - removing timeout")
+        logger.info("Timer.do_done - removing timeout")
         if self.timeout is not None and GObject.source_remove(self.timeout):
             self.timeout = None
 
