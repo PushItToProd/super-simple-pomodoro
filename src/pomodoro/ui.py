@@ -110,8 +110,8 @@ class MainWindow(BigLabelButtonWindow):
         """
         _ = timer
         self.set_label("Done!")
-        playsound(config.DONE_SOUND)
         self.set_state(State.stopped)
+        playsound(config.DONE_SOUND)
 
     def start_timer(self, duration, state):
         """
