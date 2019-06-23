@@ -22,42 +22,84 @@ def get_logger():
 logger = get_logger()
 
 
+WINDOW_TITLE = "Pomodoro timer"
 STARTUP_MESSAGE = "Pomodoro Timer"
 LABEL_FONT = "44"
 
 
-class MainWindow(Gtk.Window):
+class Timer(GObject.GObject):
+    """
+    A simple async timer object. When started, it counts down from the set time,
+    signalling time remaining each second, and then signals done.
+    """
+    __gsignals__ = {
+        'start': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'tick': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
+        'done': (GObject.SIGNAL_RUN_FIRST, None, ()),
+    }
+
     def __init__(self):
-        Gtk.Window.__init__(self, title="Pomodoro timer")
-        logger.info('MainWindow: initializing')
+        GObject.GObject.__init__(self)
+        self.remaining = None
+        self.timeout = None
+
+    def do_start(self, seconds):
+        self.remaining = seconds
+        if self.timeout is None:
+            self.timeout = GObject.timeout_add(1000, self._timer_tick)
+
+    def _timer_tick(self):
+        if self.remaining > 0:
+            self.remaining -= 1
+            self.emit('tick', self.remaining)
+            return True
+        else:
+            self.emit('done')
+            return False
+
+    def do_tick(self, remaining):
+        return remaining
+
+    def do_done(self):
+        print("Timer.do_done - removing timeout")
+        if GObject.source_remove(self.timeout):
+            self.timeout = None
+
+    def __str__(self):
+        minutes = self.remaining // 60
+        seconds = self.remaining % 60
+        return f"{minutes:02}:{seconds:02}"
+
+    def __bool__(self):
+        return self.remaining > 0
+
+
+class BigLabelButtonWindow(Gtk.Window):
+    def __init__(self, title, startup_message):
+        self.title = title
+        self.startup_message = startup_message
+
+        Gtk.Window.__init__(self, title=title)
+        logger.info('BigLabelButtonWindow: initializing')
+
         self.set_type_hint(1)  # TODO: find the DIALOG constant
         self.set_border_width(25)
 
-        self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.add(self.box)
+        self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.add(self.main_box)
 
         self.label = Gtk.Label()
-        self.set_label(STARTUP_MESSAGE)
-        self.box_add(self.label)
+        self.set_label(startup_message)
+        self.main_box_add(self.label)
 
         self.button_box = Gtk.Box(spacing=6)
-        self.box_add(self.button_box)
-
-        self.work_button = self.add_button("Work", self.work_clicked)
-        self.break_button = self.add_button("Break", self.break_clicked)
-        self.long_break_button = self.add_button(
-            "Long Break", self.long_break_clicked)
-        self.stop_button = self.add_button("Stop", self.stop_clicked)
-
-        self.time_remaining = None
-
-        GObject.timeout_add(1000, self.timer_tick)
+        self.main_box_add(self.button_box)
 
     def set_label(self, message):
         self.label.set_markup(f'<span font="{LABEL_FONT}">{message}</span>')
 
-    def box_add(self, widget, padding=0):
-        self.box.pack_start(widget, True, True, padding)
+    def main_box_add(self, widget, padding=0):
+        self.main_box.pack_start(widget, True, True, padding)
 
     def add_button(self, label, callback):
         button = Gtk.Button(label=label)
@@ -65,10 +107,34 @@ class MainWindow(Gtk.Window):
         self.button_box.pack_start(button, True, True, 0)
         return button
 
-    def timer_tick(self):
-        if self.time_remaining is None:
-            logger.debug("timer_tick: No timer running.")
-            return True
+
+class MainWindow(BigLabelButtonWindow):
+    def __init__(self):
+        super().__init__(WINDOW_TITLE, STARTUP_MESSAGE)
+        logger.info('MainWindow: initializing')
+
+        self.work_button = self.add_button("Work", self.work_clicked)
+        self.break_button = self.add_button("Break", self.break_clicked)
+        self.long_break_button = self.add_button(
+            "Long Break", self.long_break_clicked)
+        self.stop_button = self.add_button("Stop", self.stop_clicked)
+
+        self.timer = Timer()
+        self.timer.connect("start", self.on_timer_start)
+        self.timer.connect("tick", self.on_timer_tick)
+        self.timer.connect("done", self.on_timer_done)
+
+    def start_timer(self):
+        pass
+
+    def on_timer_start(self, timer, duration):
+        pass
+
+    def on_timer_tick(self, timer, remaining):
+        pass
+
+    def on_timer_done(self, timer):
+        pass
 
     def work_clicked(self):
         logger.info("work_clicked: Work button clicked")
