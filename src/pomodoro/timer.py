@@ -38,6 +38,8 @@ class Timer(GObject.GObject):
         self.emit('tick', seconds)
 
     def _timer_tick(self):
+        if self.timeout is None:
+            return False
         self.remaining -= 1
         if self.remaining <= 0:
             self.emit('done')
