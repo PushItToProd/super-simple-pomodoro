@@ -1,6 +1,8 @@
 super-simple-pomodoro
 =====================
 
+A very simple pomodoro timer built with Python and GTK.
+
 Install
 -------
 
