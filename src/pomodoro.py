@@ -22,7 +22,7 @@ def get_logger():
 logger = get_logger()
 
 
-WINDOW_TITLE = "Pomodoro timer"
+WINDOW_TITLE = "Pomodoro Timer"
 STARTUP_MESSAGE = "Pomodoro Timer"
 LABEL_FONT = "44"
 WORK_DURATION = 25 * 60
