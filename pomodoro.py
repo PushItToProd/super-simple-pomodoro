@@ -25,6 +25,9 @@ logger = get_logger()
 WINDOW_TITLE = "Pomodoro timer"
 STARTUP_MESSAGE = "Pomodoro Timer"
 LABEL_FONT = "44"
+WORK_DURATION = 25 * 60
+BREAK_DURATION = 5 * 60
+LONG_BREAK_DURATION = 30 * 60
 
 
 class Timer(GObject.GObject):
@@ -44,13 +47,15 @@ class Timer(GObject.GObject):
         self.timeout = None
 
     def do_start(self, seconds):
+        assert seconds > 0, "can't start timer with zero/negative time!"
         self.remaining = seconds
         if self.timeout is None:
             self.timeout = GObject.timeout_add(1000, self._timer_tick)
+        self.emit('tick', seconds)
 
     def _timer_tick(self):
+        self.remaining -= 1
         if self.remaining > 0:
-            self.remaining -= 1
             self.emit('tick', self.remaining)
             return True
         else:
@@ -120,37 +125,37 @@ class MainWindow(BigLabelButtonWindow):
         self.stop_button = self.add_button("Stop", self.stop_clicked)
 
         self.timer = Timer()
-        self.timer.connect("start", self.on_timer_start)
         self.timer.connect("tick", self.on_timer_tick)
         self.timer.connect("done", self.on_timer_done)
 
-    def start_timer(self):
-        pass
-
-    def on_timer_start(self, timer, duration):
-        pass
-
     def on_timer_tick(self, timer, remaining):
-        pass
+        self.set_label(str(timer))
 
     def on_timer_done(self, timer):
-        pass
+        self.set_label("Done!")
 
-    def work_clicked(self):
+    def start_timer(self, duration):
+        """
+        duration: Time in seconds.
+        """
+        assert duration > 0, "can't start timer with zero/negative time!"
+        self.timer.emit("start", duration)
+
+    def work_clicked(self, widget):
         logger.info("work_clicked: Work button clicked")
-        pass
+        self.start_timer(WORK_DURATION)
 
-    def break_clicked(self):
+    def break_clicked(self, widget):
         logger.info("break_clicked: Break button clicked")
-        pass
+        self.start_timer(BREAK_DURATION)
 
-    def long_break_clicked(self):
+    def long_break_clicked(self, widget):
         logger.info("long_break_clicked: Long Break button clicked")
-        pass
+        self.start_timer(LONG_BREAK_DURATION)
 
-    def stop_clicked(self):
+    def stop_clicked(self, widget):
         logger.info("stop_clicked: Stop button clicked")
-        pass
+        self.timer.emit('done')
 
 
 if __name__ == "__main__":
