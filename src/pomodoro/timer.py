@@ -1,9 +1,9 @@
+"""
+A timer utility for GTK.
+"""
 import logging
 
 from gi.repository import GObject
-
-
-logger = logging.getLogger('pomodoro.timer')
 
 
 class Timer(GObject.GObject):
@@ -11,6 +11,7 @@ class Timer(GObject.GObject):
     A simple async timer object. When started, it counts down from the set time,
     signalling time remaining each second, and then signals done.
     """
+    logger = logging.getLogger('pomodoro.timer')
     __gsignals__ = {
         'start': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
         'tick': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
@@ -23,6 +24,13 @@ class Timer(GObject.GObject):
         self.timeout = None
 
     def do_start(self, seconds):
+        """
+        Handler for the start signal, used both to start and initialize the
+        timer.
+
+        Args:
+            seconds (int): Timer duration.
+        """
         assert seconds > 0, "can't start timer with zero/negative time!"
         self.remaining = seconds
         if self.timeout is None:
@@ -31,18 +39,17 @@ class Timer(GObject.GObject):
 
     def _timer_tick(self):
         self.remaining -= 1
-        if self.remaining > 0:
-            self.emit('tick', self.remaining)
-            return True
-        else:
+        if self.remaining <= 0:
             self.emit('done')
             return False
-
-    def do_tick(self, remaining):
-        return remaining
+        self.emit('tick', self.remaining)
+        return True
 
     def do_done(self):
-        logger.info("Timer.do_done - removing timeout")
+        """
+        Handler for the done signal, called when the timer ends.
+        """
+        self.logger.info("Timer.do_done - removing timeout")
         if self.timeout is not None and GObject.source_remove(self.timeout):
             self.timeout = None
 

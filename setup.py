@@ -1,3 +1,6 @@
+"""
+Package definition for pomodoro.
+"""
 from setuptools import setup
 
 

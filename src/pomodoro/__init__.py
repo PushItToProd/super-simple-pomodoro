@@ -1,3 +1,6 @@
+"""
+pomodoro is a super simple pomodoro timer.
+"""
 import logging
 from datetime import timedelta
 
@@ -9,21 +12,23 @@ from pomodoro.ui import MainWindow
 
 
 def get_logger():
+    """
+    Generate root logger for pomodoro.
+    """
     logger = logging.getLogger('pomodoro')
     logger.setLevel(logging.DEBUG)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
     return logger
 
 
-logger = get_logger()
-
-
 def main():
+    """Entrypoint for the application."""
+    logger = get_logger()
     logger.info('Creating an intance of MainWindow')
     win = MainWindow()
     win.connect("destroy", Gtk.main_quit)

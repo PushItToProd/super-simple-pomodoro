@@ -1,3 +1,7 @@
+"""
+Constants used to configure pomodoro.
+"""
+
 WINDOW_TITLE = "Pomodoro Timer"
 STARTUP_MESSAGE = "Pomodoro Timer"
 LABEL_FONT = "44"
