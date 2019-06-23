@@ -18,4 +18,7 @@ setup(
         'PyGObject',
         'playsound',
     ],
+    extras_require={
+        'dev': ['pylint']
+    }
 )
