@@ -9,8 +9,8 @@ setup(
     author_email='pushittoprod@gmail.com',
     python_requires='>=3.6.0',
     package_dir={'': 'src'},
-    py_modules=['pomodoro'],
-    packages=[],
+    py_modules=[],
+    packages=['pomodoro'],
     entry_points={
         'console_scripts': ['pomodoro=pomodoro:main']
     },

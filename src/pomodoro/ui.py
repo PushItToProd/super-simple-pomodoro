@@ -1,83 +1,15 @@
 import logging
-from datetime import timedelta
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject
 from playsound import playsound
 
-
-def get_logger():
-    logger = logging.getLogger('pomodoro')
-    logger.setLevel(logging.DEBUG)
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-    return logger
+from pomodoro.timer import Timer
+from pomodoro.settings import *
 
 
-logger = get_logger()
-
-
-WINDOW_TITLE = "Pomodoro Timer"
-STARTUP_MESSAGE = "Pomodoro Timer"
-LABEL_FONT = "44"
-WORK_DURATION = 25 * 60
-BREAK_DURATION = 5 * 60
-LONG_BREAK_DURATION = 30 * 60
-DONE_SOUND = "/usr/share/sounds/ubuntu/notifications/Amsterdam.ogg"
-
-
-class Timer(GObject.GObject):
-    """
-    A simple async timer object. When started, it counts down from the set time,
-    signalling time remaining each second, and then signals done.
-    """
-    __gsignals__ = {
-        'start': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'tick': (GObject.SIGNAL_RUN_FIRST, None, (int,)),
-        'done': (GObject.SIGNAL_RUN_FIRST, None, ()),
-    }
-
-    def __init__(self):
-        GObject.GObject.__init__(self)
-        self.remaining = None
-        self.timeout = None
-
-    def do_start(self, seconds):
-        assert seconds > 0, "can't start timer with zero/negative time!"
-        self.remaining = seconds
-        if self.timeout is None:
-            self.timeout = GObject.timeout_add(1000, self._timer_tick)
-        self.emit('tick', seconds)
-
-    def _timer_tick(self):
-        self.remaining -= 1
-        if self.remaining > 0:
-            self.emit('tick', self.remaining)
-            return True
-        else:
-            self.emit('done')
-            return False
-
-    def do_tick(self, remaining):
-        return remaining
-
-    def do_done(self):
-        logger.info("Timer.do_done - removing timeout")
-        if self.timeout is not None and GObject.source_remove(self.timeout):
-            self.timeout = None
-
-    def __str__(self):
-        minutes = self.remaining // 60
-        seconds = self.remaining % 60
-        return f"{minutes:02}:{seconds:02}"
-
-    def __bool__(self):
-        return self.remaining > 0
+logger = logging.getLogger('pomodoro.ui')
 
 
 class BigLabelButtonWindow(Gtk.Window):
@@ -158,17 +90,3 @@ class MainWindow(BigLabelButtonWindow):
     def stop_clicked(self, widget):
         logger.info("stop_clicked: Stop button clicked")
         self.timer.emit('done')
-
-
-def main():
-    logger.info('Creating an intance of MainWindow')
-    win = MainWindow()
-    win.connect("destroy", Gtk.main_quit)
-    logger.info('Launching')
-    win.show_all()
-    Gtk.main()
-    logger.info('All done')
-
-
-if __name__ == "__main__":
-    main()
