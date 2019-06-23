@@ -160,7 +160,7 @@ class MainWindow(BigLabelButtonWindow):
         self.timer.emit('done')
 
 
-if __name__ == "__main__":
+def main():
     logger.info('Creating an intance of MainWindow')
     win = MainWindow()
     win.connect("destroy", Gtk.main_quit)
@@ -168,3 +168,7 @@ if __name__ == "__main__":
     win.show_all()
     Gtk.main()
     logger.info('All done')
+
+
+if __name__ == "__main__":
+    main()
