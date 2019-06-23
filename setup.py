@@ -22,6 +22,9 @@ setup(
         'playsound',
     ],
     extras_require={
-        'dev': ['pylint']
+        'dev': [
+            'pylint',
+            'pycodestyle',
+        ]
     }
 )

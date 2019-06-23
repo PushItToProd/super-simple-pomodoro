@@ -12,8 +12,6 @@ from pomodoro.timer import Timer
 from pomodoro import settings as config
 
 
-
-
 class BigLabelButtonWindow(Gtk.Window):
     """
     Base class for the pomodoro timer window.
@@ -32,7 +30,8 @@ class BigLabelButtonWindow(Gtk.Window):
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_border_width(25)
 
-        self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.main_box = Gtk.Box(
+            orientation=Gtk.Orientation.VERTICAL, spacing=10)
         self.add(self.main_box)
 
         self.label = Gtk.Label()
@@ -46,7 +45,8 @@ class BigLabelButtonWindow(Gtk.Window):
         """
         Update the main label.
         """
-        self.label.set_markup(f'<span font="{config.LABEL_FONT}">{message}</span>')
+        self.label.set_markup(
+            f'<span font="{config.LABEL_FONT}">{message}</span>')
 
     def main_box_add(self, widget, padding=0):
         """

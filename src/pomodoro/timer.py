@@ -8,8 +8,8 @@ from gi.repository import GObject
 
 class Timer(GObject.GObject):
     """
-    A simple async timer object. When started, it counts down from the set time,
-    signalling time remaining each second, and then signals done.
+    A simple async timer object. When started, it counts down from the set
+    time, signalling time remaining each second, and then signals done.
     """
     logger = logging.getLogger('pomodoro.timer')
     __gsignals__ = {
