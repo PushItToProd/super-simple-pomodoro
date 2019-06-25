@@ -10,7 +10,10 @@ Only tested under Ubuntu 18.04.
 
 ### System Dependencies
 
-I don't actually know for sure which of these are needed because I didn't pay 
+Because the sounds used are hard-coded, this only works under Ubuntu at the
+moment.
+
+I don't actually know for sure which of these are needed because I didn't pay
 enough attention during setup. However, I'm pretty confident the following are
 sufficient:
 
