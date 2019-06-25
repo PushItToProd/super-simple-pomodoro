@@ -23,18 +23,24 @@ sufficient:
 ### Install steps (development)
 
 * Make sure the system dependencies are installed for virtualenv support.
+
   ```
   sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config \
     python3-dev gir1.2-gtk-3.0
   ```
+
 * Create and activate a virtualenv with Python 3.6.
+
   ```
   python3.6 -m venv venv && source venv/bin/activate
   ```
+
 * Install the package into the virtualenv.
+
   ```
   python setup.py install -e .
   ```
+
 * Now the `pomodoro` command line script should be on your path. If you run it, 
   the Pomodoro Timer app should launch.
 
