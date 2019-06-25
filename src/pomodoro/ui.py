@@ -123,6 +123,7 @@ class MainWindow(BigLabelButtonWindow):
         assert duration > 0, "can't start timer with zero/negative time!"
         self.timer.emit("start", duration)
         self.set_state(state)
+        playsound(config.START_SOUND)
 
     def stop_timer(self):
         """
