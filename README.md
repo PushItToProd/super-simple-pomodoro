@@ -26,7 +26,7 @@ sufficient:
 
   ```
   sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config \
-    python3-dev gir1.2-gtk-3.0
+    python3.7-dev gir1.2-gtk-3.0
   ```
 
 * Create and activate a virtualenv with Python 3.6.
