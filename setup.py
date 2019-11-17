@@ -10,7 +10,7 @@ setup(
     description='A super simple pomodoro timer.',
     author='pushittoprod',
     author_email='pushittoprod@gmail.com',
-    python_requires='>=3.6.0',
+    python_requires='>=3.7.0',
     package_dir={'': 'src'},
     py_modules=[],
     packages=['pomodoro'],
