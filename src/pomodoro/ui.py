@@ -90,10 +90,16 @@ class MainWindow(BigLabelButtonWindow):
         super().__init__(options)
         self.logger.info('MainWindow: initializing')
 
-        self.work_button = self.add_button("Work", self.work_clicked)
-        self.break_button = self.add_button("Break", self.break_clicked)
+        self.work_button = self.add_button(
+            f"Work ({options.work_duration})", self.work_clicked
+        )
+        self.break_button = self.add_button(
+            f"Break ({options.break_duration})", self.break_clicked
+        )
         self.long_break_button = self.add_button(
-            "Long Break", self.long_break_clicked)
+            f"Long Break ({options.long_break_duration})",
+            self.long_break_clicked
+        )
         self.stop_button = self.add_button("Stop", self.stop_clicked)
 
         self.timer = Timer()
