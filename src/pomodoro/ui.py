@@ -4,12 +4,14 @@ GUI definitions for pomodoro.
 import logging
 
 import gi
+
+from pomodoro.options import PomodoroOptions
+
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 from playsound import playsound
 
 from pomodoro.timer import Timer
-from pomodoro import settings as config
 
 
 class State:
@@ -26,11 +28,12 @@ class BigLabelButtonWindow(Gtk.Window):
     """
     logger = logging.getLogger('pomodoro.ui')
 
-    def __init__(self, title, startup_message):
-        self.title = title
-        self.startup_message = startup_message
+    def __init__(self, options: PomodoroOptions):
+        self.options = options
+        self.title = options.window_title
+        self.startup_message = options.startup_message
 
-        Gtk.Window.__init__(self, title=title)
+        Gtk.Window.__init__(self, title=self.title)
         self.logger.info('BigLabelButtonWindow: initializing')
 
         self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
@@ -41,7 +44,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.add(self.main_box)
 
         self.label = Gtk.Label()
-        self.set_label(startup_message)
+        self.set_label(self.options.startup_message)
         self.main_box_add(self.label)
 
         self.state_label = Gtk.Label()
@@ -57,7 +60,7 @@ class BigLabelButtonWindow(Gtk.Window):
         Update the main label.
         """
         self.label.set_markup(
-            f'<span font="{config.LABEL_FONT}">{message}</span>')
+            f'<span font="{self.options.label_font}">{message}</span>')
 
     def set_state(self, state):
         self.state = state
@@ -83,8 +86,8 @@ class MainWindow(BigLabelButtonWindow):
     """
     Definition of the actual pomodoro timer window.
     """
-    def __init__(self):
-        super().__init__(config.WINDOW_TITLE, config.STARTUP_MESSAGE)
+    def __init__(self, options: PomodoroOptions):
+        super().__init__(options)
         self.logger.info('MainWindow: initializing')
 
         self.work_button = self.add_button("Work", self.work_clicked)
@@ -111,7 +114,7 @@ class MainWindow(BigLabelButtonWindow):
         _ = timer
         self.set_label("Done!")
         self.set_state(State.stopped)
-        playsound(config.DONE_SOUND)
+        playsound(self.options.done_sound)
 
     def start_timer(self, duration, state):
         """
@@ -123,7 +126,7 @@ class MainWindow(BigLabelButtonWindow):
         assert duration > 0, "can't start timer with zero/negative time!"
         self.timer.emit("start", duration)
         self.set_state(state)
-        playsound(config.START_SOUND)
+        playsound(self.options.start_sound)
 
     def stop_timer(self):
         """
@@ -138,7 +141,7 @@ class MainWindow(BigLabelButtonWindow):
         """
         _ = widget
         self.logger.info("work_clicked: Work button clicked")
-        self.start_timer(config.WORK_DURATION, State.working)
+        self.start_timer(self.options.work_duration_seconds, State.working)
 
     def break_clicked(self, widget):
         """
@@ -146,7 +149,7 @@ class MainWindow(BigLabelButtonWindow):
         """
         _ = widget
         self.logger.info("break_clicked: Break button clicked")
-        self.start_timer(config.BREAK_DURATION, State.break_time)
+        self.start_timer(self.options.break_duration_seconds, State.break_time)
 
     def long_break_clicked(self, widget):
         """
@@ -154,7 +157,8 @@ class MainWindow(BigLabelButtonWindow):
         """
         _ = widget
         self.logger.info("long_break_clicked: Long Break button clicked")
-        self.start_timer(config.LONG_BREAK_DURATION, State.break_time)
+        self.start_timer(self.options.long_break_duration_seconds,
+                         State.break_time)
 
     def stop_clicked(self, widget):
         """
