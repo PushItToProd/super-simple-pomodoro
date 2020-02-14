@@ -51,7 +51,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.main_box_add(self.label)
 
         self.state_label = Gtk.Label()
-        self.set_state(State.stopped)
+        self.set_timer_state(State.stopped)
         self.main_box_add(self.state_label)
 
         self.button_rows = []
@@ -63,7 +63,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.label.set_markup(
             f'<span font="{self.options.label_font}">{message}</span>')
 
-    def set_state(self, state: State):
+    def set_timer_state(self, state: State):
         self.state_label.set_label(state.value)
 
     def main_box_add(self, widget, padding=0):
@@ -123,7 +123,7 @@ class MainWindow(BigLabelButtonWindow):
         """
         _ = timer
         self.set_label("Done!")
-        self.set_state(State.stopped)
+        self.set_timer_state(State.stopped)
         playsound(self.options.done_sound)
 
     def start_timer(self, duration, state):
@@ -135,14 +135,14 @@ class MainWindow(BigLabelButtonWindow):
         """
         assert duration > 0, "can't start timer with zero/negative time!"
         self.timer.emit("start", duration)
-        self.set_state(state)
+        self.set_timer_state(state)
         playsound(self.options.start_sound)
 
     def stop_timer(self):
         """
         Stop the timer object.
         """
-        self.set_state(State.stopped)
+        self.set_timer_state(State.stopped)
         self.timer.emit("done")
 
     def get_button_callback(self, duration: int, is_work: bool):
