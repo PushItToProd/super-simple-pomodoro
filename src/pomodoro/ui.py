@@ -6,12 +6,11 @@ from enum import Enum
 
 import gi
 
-from pomodoro.options import PomodoroOptions
-
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 from playsound import playsound
 
+from pomodoro.options import PomodoroOptions
 from pomodoro.timer import Timer
 
 
