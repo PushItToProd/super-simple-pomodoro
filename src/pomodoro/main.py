@@ -2,6 +2,8 @@ import argparse
 import logging
 import os
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 from pomodoro import defaults
@@ -64,7 +66,8 @@ def main():
     logger = logging.getLogger(__name__)
 
     parser = get_parser()
-    options = parser.parse_args(namespace=PomodoroOptions())
+    # options = parser.parse_args(namespace=PomodoroOptions())
+    options = PomodoroOptions()
     logger.debug('Starting with options %s', options)
 
     logger.info('Creating an instance of MainWindow')

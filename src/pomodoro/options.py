@@ -1,9 +1,38 @@
 """
 Define an object used for common configuration options.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import List
 
 from pomodoro import defaults
+
+
+@dataclass
+class TimerOption:
+    """
+    Configure a timer button.
+    """
+    label: str
+    minutes: int
+    is_work: bool
+
+    @property
+    def seconds(self):
+        """
+        Get timer duration in seconds.
+        """
+        return self.minutes * 60
+
+
+def get_default_times() -> List[TimerOption]:
+    return [
+        TimerOption("Work", 25, True),
+        TimerOption("Break", 5, False),
+        TimerOption("Long Break", 30, False),
+        TimerOption("Work", 15, True),
+        TimerOption("Break", 3, False),
+        TimerOption("Long Break", 20, False),
+    ]
 
 
 @dataclass
@@ -15,18 +44,4 @@ class PomodoroOptions:
     done_sound: str = defaults.DONE_SOUND
     start_sound: str = defaults.START_SOUND
 
-    work_duration: int = defaults.WORK_DURATION
-    break_duration: int = defaults.BREAK_DURATION
-    long_break_duration: int = defaults.LONG_BREAK_DURATION
-
-    @property
-    def work_duration_seconds(self):
-        return self.work_duration * 60
-
-    @property
-    def break_duration_seconds(self):
-        return self.break_duration * 60
-
-    @property
-    def long_break_duration_seconds(self):
-        return self.long_break_duration * 60
+    times: List[TimerOption] = field(default_factory=get_default_times)

@@ -40,7 +40,8 @@ class BigLabelButtonWindow(Gtk.Window):
         self.set_border_width(25)
 
         self.main_box = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL, spacing=10)
+            orientation=Gtk.Orientation.VERTICAL, spacing=10
+        )
         self.add(self.main_box)
 
         self.label = Gtk.Label()
@@ -90,16 +91,22 @@ class MainWindow(BigLabelButtonWindow):
         super().__init__(options)
         self.logger.info('MainWindow: initializing')
 
-        self.work_button = self.add_button(
-            f"Work ({options.work_duration})", self.work_clicked
-        )
-        self.break_button = self.add_button(
-            f"Break ({options.break_duration})", self.break_clicked
-        )
-        self.long_break_button = self.add_button(
-            f"Long Break ({options.long_break_duration})",
-            self.long_break_clicked
-        )
+        for opt in options.times:
+            self.add_button(
+                f"{opt.label} ({opt.minutes})",
+                self.get_button_callback(opt.seconds, opt.is_work)
+            )
+
+        # self.work_button = self.add_button(
+        #     f"Work ({options.work_duration})", self.work_clicked
+        # )
+        # self.break_button = self.add_button(
+        #     f"Break ({options.break_duration})", self.break_clicked
+        # )
+        # self.long_break_button = self.add_button(
+        #     f"Long Break ({options.long_break_duration})",
+        #     self.long_break_clicked
+        # )
         self.stop_button = self.add_button("Stop", self.stop_clicked)
 
         self.timer = Timer()
@@ -141,30 +148,38 @@ class MainWindow(BigLabelButtonWindow):
         self.set_state(State.stopped)
         self.timer.emit("done")
 
-    def work_clicked(self, widget):
-        """
-        Handler for Work button click events.
-        """
-        _ = widget
-        self.logger.info("work_clicked: Work button clicked")
-        self.start_timer(self.options.work_duration_seconds, State.working)
+    def get_button_callback(self, duration: int, is_work: bool):
+        def callback(widget):
+            _ = widget
+            self.logger.info("button callback called")
+            state = State.working if is_work else State.break_time
+            self.start_timer(duration, state)
+        return callback
 
-    def break_clicked(self, widget):
-        """
-        Handler for Break button click events.
-        """
-        _ = widget
-        self.logger.info("break_clicked: Break button clicked")
-        self.start_timer(self.options.break_duration_seconds, State.break_time)
-
-    def long_break_clicked(self, widget):
-        """
-        Handler for Long Break button click events.
-        """
-        _ = widget
-        self.logger.info("long_break_clicked: Long Break button clicked")
-        self.start_timer(self.options.long_break_duration_seconds,
-                         State.break_time)
+    # def work_clicked(self, widget):
+    #     """
+    #     Handler for Work button click events.
+    #     """
+    #     _ = widget
+    #     self.logger.info("work_clicked: Work button clicked")
+    #     self.start_timer(self.options.work_duration_seconds, State.working)
+    #
+    # def break_clicked(self, widget):
+    #     """
+    #     Handler for Break button click events.
+    #     """
+    #     _ = widget
+    #     self.logger.info("break_clicked: Break button clicked")
+    #     self.start_timer(self.options.break_duration_seconds, State.break_time)
+    #
+    # def long_break_clicked(self, widget):
+    #     """
+    #     Handler for Long Break button click events.
+    #     """
+    #     _ = widget
+    #     self.logger.info("long_break_clicked: Long Break button clicked")
+    #     self.start_timer(self.options.long_break_duration_seconds,
+    #                      State.break_time)
 
     def stop_clicked(self, widget):
         """
