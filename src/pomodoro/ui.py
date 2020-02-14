@@ -76,6 +76,9 @@ class BigLabelButtonWindow(Gtk.Window):
         self.main_box.pack_start(widget, True, True, padding)
 
     def add_button_row(self):
+        """
+        Add a new button box to the window for a new row of buttons.
+        """
         box = Gtk.Box(spacing=6)
         self.button_rows.append(box)
         self.main_box_add(box)
