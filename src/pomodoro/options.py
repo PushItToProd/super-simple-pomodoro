@@ -33,6 +33,9 @@ class TimerOptionGroup:
 
 
 def get_default_times() -> List[TimerOptionGroup]:
+    """
+    Default factory for PomodoroOptions.times.
+    """
     return [
         TimerOptionGroup([
             TimerOption("Work", 25, True),
@@ -49,6 +52,9 @@ def get_default_times() -> List[TimerOptionGroup]:
 
 @dataclass
 class PomodoroOptions:
+    """
+    Configuration for the Pomodoro app.
+    """
     window_title: str = defaults.WINDOW_TITLE
     startup_message: str = defaults.STARTUP_MESSAGE
     label_font: str = defaults.LABEL_FONT

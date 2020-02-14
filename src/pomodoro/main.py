@@ -1,3 +1,6 @@
+"""
+Entrypoint for the app. Handles options and starts the GUI.
+"""
 import argparse
 import logging
 import os
@@ -40,6 +43,9 @@ def get_logger():
 
 
 def get_parser():
+    """
+    Generate command line argument parser.
+    """
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument(
         '-w', '--work-duration', '--work', type=int,
