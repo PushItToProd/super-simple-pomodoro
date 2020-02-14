@@ -15,6 +15,7 @@ from pomodoro.timer import Timer
 
 
 class State:
+    """Simple state quasi-enum."""
     stopped = ""
     working = "Working"
     break_time = "Break Time"
@@ -49,8 +50,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.main_box_add(self.label)
 
         self.state_label = Gtk.Label()
-        self.state = ""
-        self.set_state("")
+        self.set_state(State.stopped)
         self.main_box_add(self.state_label)
 
         self.button_rows = []
@@ -63,8 +63,7 @@ class BigLabelButtonWindow(Gtk.Window):
             f'<span font="{self.options.label_font}">{message}</span>')
 
     def set_state(self, state):
-        self.state = state
-        self.state_label.set_label(self.state)
+        self.state_label.set_label(state)
 
     def main_box_add(self, widget, padding=0):
         """
