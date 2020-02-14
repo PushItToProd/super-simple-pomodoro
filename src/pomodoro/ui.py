@@ -64,6 +64,9 @@ class BigLabelButtonWindow(Gtk.Window):
             f'<span font="{self.options.label_font}">{message}</span>')
 
     def set_timer_state(self, state: State):
+        """
+        Set the timer state label.
+        """
         self.state_label.set_label(state.value)
 
     def main_box_add(self, widget, padding=0):
