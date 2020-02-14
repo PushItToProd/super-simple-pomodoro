@@ -53,8 +53,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.set_state("")
         self.main_box_add(self.state_label)
 
-        self.button_box = Gtk.Box(spacing=6)
-        self.main_box_add(self.button_box)
+        self.button_rows = []
 
     def set_label(self, message):
         """
@@ -73,13 +72,18 @@ class BigLabelButtonWindow(Gtk.Window):
         """
         self.main_box.pack_start(widget, True, True, padding)
 
-    def add_button(self, label, callback):
+    def add_button_row(self):
+        box = Gtk.Box(spacing=6)
+        self.button_rows.append(box)
+        self.main_box_add(box)
+
+    def add_button(self, label, callback, row=-1):
         """
         Add a button to the button box at the bottom of the window.
         """
         button = Gtk.Button(label=label)
         button.connect("clicked", callback)
-        self.button_box.pack_start(button, True, True, 0)
+        self.button_rows[row].pack_start(button, True, True, 0)
         return button
 
 
@@ -91,22 +95,15 @@ class MainWindow(BigLabelButtonWindow):
         super().__init__(options)
         self.logger.info('MainWindow: initializing')
 
-        for opt in options.times:
-            self.add_button(
-                f"{opt.label} ({opt.minutes})",
-                self.get_button_callback(opt.seconds, opt.is_work)
-            )
+        for group in options.times:
+            self.add_button_row()
+            for opt in group.times:
+                self.add_button(
+                    f"{opt.label} ({opt.minutes})",
+                    self.get_button_callback(opt.seconds, opt.is_work)
+                )
 
-        # self.work_button = self.add_button(
-        #     f"Work ({options.work_duration})", self.work_clicked
-        # )
-        # self.break_button = self.add_button(
-        #     f"Break ({options.break_duration})", self.break_clicked
-        # )
-        # self.long_break_button = self.add_button(
-        #     f"Long Break ({options.long_break_duration})",
-        #     self.long_break_clicked
-        # )
+        self.add_button_row()
         self.stop_button = self.add_button("Stop", self.stop_clicked)
 
         self.timer = Timer()
@@ -155,31 +152,6 @@ class MainWindow(BigLabelButtonWindow):
             state = State.working if is_work else State.break_time
             self.start_timer(duration, state)
         return callback
-
-    # def work_clicked(self, widget):
-    #     """
-    #     Handler for Work button click events.
-    #     """
-    #     _ = widget
-    #     self.logger.info("work_clicked: Work button clicked")
-    #     self.start_timer(self.options.work_duration_seconds, State.working)
-    #
-    # def break_clicked(self, widget):
-    #     """
-    #     Handler for Break button click events.
-    #     """
-    #     _ = widget
-    #     self.logger.info("break_clicked: Break button clicked")
-    #     self.start_timer(self.options.break_duration_seconds, State.break_time)
-    #
-    # def long_break_clicked(self, widget):
-    #     """
-    #     Handler for Long Break button click events.
-    #     """
-    #     _ = widget
-    #     self.logger.info("long_break_clicked: Long Break button clicked")
-    #     self.start_timer(self.options.long_break_duration_seconds,
-    #                      State.break_time)
 
     def stop_clicked(self, widget):
         """

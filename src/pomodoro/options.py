@@ -24,14 +24,26 @@ class TimerOption:
         return self.minutes * 60
 
 
-def get_default_times() -> List[TimerOption]:
+@dataclass
+class TimerOptionGroup:
+    """
+    A set of timings to display in a row.
+    """
+    times: List[TimerOption]
+
+
+def get_default_times() -> List[TimerOptionGroup]:
     return [
-        TimerOption("Work", 25, True),
-        TimerOption("Break", 5, False),
-        TimerOption("Long Break", 30, False),
-        TimerOption("Work", 15, True),
-        TimerOption("Break", 3, False),
-        TimerOption("Long Break", 20, False),
+        TimerOptionGroup([
+            TimerOption("Work", 25, True),
+            TimerOption("Break", 5, False),
+            TimerOption("Long Break", 30, False),
+        ]),
+        TimerOptionGroup([
+            TimerOption("Work", 15, True),
+            TimerOption("Break", 3, False),
+            TimerOption("Long Break", 20, False),
+        ]),
     ]
 
 
@@ -44,4 +56,4 @@ class PomodoroOptions:
     done_sound: str = defaults.DONE_SOUND
     start_sound: str = defaults.START_SOUND
 
-    times: List[TimerOption] = field(default_factory=get_default_times)
+    times: List[TimerOptionGroup] = field(default_factory=get_default_times)
