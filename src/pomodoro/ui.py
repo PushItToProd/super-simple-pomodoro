@@ -2,6 +2,7 @@
 GUI definitions for pomodoro.
 """
 import logging
+from enum import Enum
 
 import gi
 
@@ -14,8 +15,8 @@ from playsound import playsound
 from pomodoro.timer import Timer
 
 
-class State:
-    """Simple state quasi-enum."""
+class State(Enum):
+    """Enumeration of the possible timer states."""
     stopped = ""
     working = "Working"
     break_time = "Break Time"
@@ -62,8 +63,8 @@ class BigLabelButtonWindow(Gtk.Window):
         self.label.set_markup(
             f'<span font="{self.options.label_font}">{message}</span>')
 
-    def set_state(self, state):
-        self.state_label.set_label(state)
+    def set_state(self, state: State):
+        self.state_label.set_label(state.value)
 
     def main_box_add(self, widget, padding=0):
         """
