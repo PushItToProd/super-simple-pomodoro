@@ -1,7 +1,6 @@
 """
 Entrypoint for the app. Handles options and starts the GUI.
 """
-import argparse
 import logging
 import os
 
@@ -42,37 +41,12 @@ def get_logger():
     return logger
 
 
-def get_parser():
-    """
-    Generate command line argument parser.
-    """
-    parser = argparse.ArgumentParser(description=DESCRIPTION)
-    parser.add_argument(
-        '-w', '--work-duration', '--work', type=int,
-        default=DEFAULT_WORK_DURATION,
-        help='Duration of work intervals in minutes',
-    )
-    parser.add_argument(
-        '-b', '--break-duration', '--break', type=int,
-        default=DEFAULT_BREAK_DURATION,
-        help='Duration of normal breaks in minutes',
-    )
-    parser.add_argument(
-        '-l', '--long-break-duration', '--long-break', type=int,
-        default=DEFAULT_LONG_BREAK_DURATION,
-        help='Duration of long breaks in minutes',
-    )
-    return parser
-
-
 def main():
     """Entrypoint for the application."""
     # set up root logger
     _ = get_logger()
     logger = logging.getLogger(__name__)
 
-    parser = get_parser()
-    # options = parser.parse_args(namespace=PomodoroOptions())
     options = PomodoroOptions()
     logger.debug('Starting with options %s', options)
 
