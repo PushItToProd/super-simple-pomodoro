@@ -157,6 +157,13 @@ class MainWindow(BigLabelButtonWindow):
         self.timer.emit("done")
 
     def get_button_callback(self, duration: int, is_work: bool):
+        """
+        Generate a callback for a timer button object.
+        :param duration: The duration of the timer in seconds.
+        :param is_work: If true, the button will start a working state.
+            Otherwise, it will start a break state.
+        :return: The generated callback function.
+        """
         def callback(widget):
             _ = widget
             self.logger.info("button callback called")
