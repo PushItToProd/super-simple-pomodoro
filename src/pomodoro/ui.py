@@ -83,12 +83,17 @@ class BigLabelButtonWindow(Gtk.Window):
         self.button_rows.append(box)
         self.main_box_add(box)
 
-    def add_button(self, label, callback, row=-1):
+    def add_button(self, label, on_click, row=-1):
         """
         Add a button to the button box at the bottom of the window.
+
+        :arg label: The label to put on the button.
+        :arg on_click: The callback to invoke when the button is clicked.
+        :arg row: The button row to add to. By default this is the last row.
+        :return: The created button object.
         """
         button = Gtk.Button(label=label)
-        button.connect("clicked", callback)
+        button.connect("clicked", on_click)
         self.button_rows[row].pack_start(button, True, True, 0)
         return button
 
