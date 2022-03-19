@@ -6,7 +6,7 @@ A very simple pomodoro timer built with Python and GTK.
 Install
 -------
 
-Only tested under Ubuntu 18.04.
+Only tested under Ubuntu 18.04 and Pop!_OS 20.04.
 
 ### System Dependencies
 
@@ -19,6 +19,7 @@ sufficient:
 
 * Python 3.6 or better
 * [PyGObject](https://pygobject.readthedocs.io/en/latest/getting_started.html#ubuntu-getting-started)
+* `ubuntu-touch-sounds` which provides sounds at `/usr/share/sounds/ubuntu/notifications`
 
 ### Install steps (development)
 
