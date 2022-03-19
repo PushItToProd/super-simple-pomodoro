@@ -27,7 +27,7 @@ class BigLabelButtonWindow(Gtk.Window):
 
     This class is kept separate to separate presentation from logic.
     """
-    logger = logging.getLogger('pomodoro.ui')
+    logger: logging.Logger = logging.getLogger('pomodoro.ui')
 
     def __init__(self, options: PomodoroOptions):
         self.options = options
@@ -103,7 +103,7 @@ class MainWindow(BigLabelButtonWindow):
     """
     def __init__(self, options: PomodoroOptions):
         super().__init__(options)
-        self.logger.info('MainWindow: initializing')
+        self.logger.debug('MainWindow: initializing')
 
         for group in options.times:
             self.add_button_row()
@@ -119,6 +119,29 @@ class MainWindow(BigLabelButtonWindow):
         self.timer = Timer()
         self.timer.connect("tick", self.on_timer_tick)
         self.timer.connect("done", self.on_timer_done)
+
+        self.connect("key-press-event", self.on_key_press_event)
+
+    def on_key_press_event(self, widget, event):
+        """
+        Handle keyboard shortcuts
+        """
+        #self.logger.debug("key press event: widget=%s, event=%s", widget, event)
+        #self.logger.debug("keyval=%s, keyval_name=%s, modifiers=%s",
+        #                  event.keyval, Gdk.keyval_name(event.keyval), event.state)
+
+        alt_pressed = event.state & Gdk.ModifierType.MOD1_MASK
+        if alt_pressed:
+            # XXX it seems that I have been somewhat hoist by own petard here.
+            # I would like to just trigger the work, break, and stop buttons,
+            # but I was clever about how they're defined and now I can't just do
+            # that...
+            if event.keyval == Gdk.KEY_w:
+                self.logger.warn("alt+w pressed but it's not yet implemented!")
+            elif event.keyval == Gdk.KEY_b:
+                self.logger.warn("alt+b pressed but it's not yet implemented!")
+            elif event.keyval == Gdk.KEY_x:
+                self.stop_clicked()
 
     def on_timer_tick(self, timer, remaining):
         """
@@ -165,15 +188,17 @@ class MainWindow(BigLabelButtonWindow):
         """
         def callback(widget):
             _ = widget
-            self.logger.info("button callback called")
+            self.logger.debug("button callback called")
             state = State.working if is_work else State.break_time
             self.start_timer(duration, state)
         return callback
 
-    def stop_clicked(self, widget):
+    def stop_clicked(self, widget=None):
         """
         Handler for Stop button click events.
+
+        widget is a parameter that Gtk requires but is not used here.
         """
-        _ = widget
-        self.logger.info("stop_clicked: Stop button clicked")
+        _ = widget  # explicitly ignore the value of widget
+        self.logger.debug("stop_clicked: Stop button clicked")
         self.stop_timer()
