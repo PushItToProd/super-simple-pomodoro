@@ -8,9 +8,8 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from pomodoro import defaults
 from pomodoro.ui import MainWindow
-from pomodoro.options import PomodoroOptions
+from pomodoro.options import PomodoroOptions, defaults
 
 
 DESCRIPTION = 'A simple Pomodoro timer.'
