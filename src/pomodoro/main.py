@@ -19,7 +19,7 @@ DEFAULT_BREAK_DURATION = \
     os.environ.get('POMODORO_BREAK_DURATION', defaults.BREAK_DURATION)
 DEFAULT_LONG_BREAK_DURATION = \
     os.environ.get('POMODORO_LONG_BREAK_DURATION', defaults.LONG_BREAK_DURATION)
-LOG_LEVEL = getattr(logging, os.environ.get('LOG_LEVEL', default='ERROR'))
+LOG_LEVEL = getattr(logging, os.environ.get('LOG_LEVEL', default='ERROR').upper())
 
 
 def get_logger():
