@@ -55,6 +55,23 @@ class BigLabelButtonWindow(Gtk.Window):
 
         self.button_rows = []
 
+        self.button_key_bindings = {}
+        self.connect("key-press-event", self.on_key_press_event)
+
+    def on_key_press_event(self, widget, event):
+        """
+        Handle shortcuts from button_key_bindings
+        """
+        #self.logger.debug("key press event: widget=%s, event=%s", widget, event)
+        #self.logger.debug("keyval=%s, keyval_name=%s, modifiers=%s",
+        #                  event.keyval, Gdk.keyval_name(event.keyval), event.state)
+
+        alt_pressed = event.state & Gdk.ModifierType.MOD1_MASK
+        if alt_pressed:
+            key = Gdk.keyval_name(event.keyval)
+            if binding := self.button_key_bindings.get(key):
+                binding(widget)
+
     def set_label(self, message):
         """
         Update the main label.
@@ -82,7 +99,7 @@ class BigLabelButtonWindow(Gtk.Window):
         self.button_rows.append(box)
         self.main_box_add(box)
 
-    def add_button(self, label, on_click, row=-1):
+    def add_button(self, label, on_click, key=None, row=-1):
         """
         Add a button to the button box at the bottom of the window.
 
@@ -94,6 +111,11 @@ class BigLabelButtonWindow(Gtk.Window):
         button = Gtk.Button(label=label)
         button.connect("clicked", on_click)
         self.button_rows[row].pack_start(button, True, True, 0)
+
+        # bind shortcut
+        if key is not None:
+            self.button_key_bindings[key] = on_click
+
         return button
 
 
@@ -109,39 +131,17 @@ class MainWindow(BigLabelButtonWindow):
             self.add_button_row()
             for opt in group.times:
                 self.add_button(
-                    f"{opt.label} ({opt.minutes})",
-                    self.get_button_callback(opt.seconds, opt.is_work)
+                    label=f"{opt.label} ({opt.minutes})",
+                    on_click=self.get_button_callback(opt.seconds, opt.is_work),
+                    key=opt.key,
                 )
 
         self.add_button_row()
-        self.stop_button = self.add_button("Stop", self.stop_clicked)
+        self.stop_button = self.add_button("Stop", self.stop_clicked, 's')
 
         self.timer = Timer()
         self.timer.connect("tick", self.on_timer_tick)
         self.timer.connect("done", self.on_timer_done)
-
-        self.connect("key-press-event", self.on_key_press_event)
-
-    def on_key_press_event(self, widget, event):
-        """
-        Handle keyboard shortcuts
-        """
-        #self.logger.debug("key press event: widget=%s, event=%s", widget, event)
-        #self.logger.debug("keyval=%s, keyval_name=%s, modifiers=%s",
-        #                  event.keyval, Gdk.keyval_name(event.keyval), event.state)
-
-        alt_pressed = event.state & Gdk.ModifierType.MOD1_MASK
-        if alt_pressed:
-            # XXX it seems that I have been somewhat hoist by own petard here.
-            # I would like to just trigger the work, break, and stop buttons,
-            # but I was clever about how they're defined and now I can't just do
-            # that...
-            if event.keyval == Gdk.KEY_w:
-                self.logger.warn("alt+w pressed but it's not yet implemented!")
-            elif event.keyval == Gdk.KEY_b:
-                self.logger.warn("alt+b pressed but it's not yet implemented!")
-            elif event.keyval == Gdk.KEY_x:
-                self.stop_clicked()
 
     def on_timer_tick(self, timer, remaining):
         """

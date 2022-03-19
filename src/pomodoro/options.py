@@ -27,14 +27,14 @@ def get_default_times() -> 'List[TimerOptionGroup]':
     """
     return [
         TimerOptionGroup([
-            TimerOption("Work", 25, True),
-            TimerOption("Break", 5, False),
-            TimerOption("Long Break", 30, False),
+            TimerOption("Work", 25, True, 'w'),
+            TimerOption("Break", 5, False, 'b'),
+            TimerOption("Long Break", 30, False, 'l'),
         ]),
         TimerOptionGroup([
-            TimerOption("Work", 15, True),
-            TimerOption("Break", 3, False),
-            TimerOption("Long Break", 20, False),
+            TimerOption("Work", 15, True, 'W'),
+            TimerOption("Break", 3, False, 'B'),
+            TimerOption("Long Break", 20, False, 'L'),
         ]),
     ]
 
@@ -47,6 +47,7 @@ class TimerOption:
     label: str
     minutes: int
     is_work: bool
+    key: str = None
 
     @property
     def seconds(self):
