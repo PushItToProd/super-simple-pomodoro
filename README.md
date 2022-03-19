@@ -13,13 +13,12 @@ Only tested under Ubuntu 18.04 and Pop!_OS 20.04.
 Because the sounds used are hard-coded, this only works under Ubuntu at the
 moment.
 
-I don't actually know for sure which of these are needed because I didn't pay
-enough attention during setup. However, I'm pretty confident the following are
-sufficient:
+Requirements:
 
-* Python 3.6 or better
+* Python 3.8 or better
 * [PyGObject](https://pygobject.readthedocs.io/en/latest/getting_started.html#ubuntu-getting-started)
-* `ubuntu-touch-sounds` which provides sounds at `/usr/share/sounds/ubuntu/notifications`
+* (for non Ubuntu, Debian derived distros) `ubuntu-touch-sounds` which provides sounds at
+  `/usr/share/sounds/ubuntu/notifications`
 
 ### Install steps (development)
 
@@ -27,13 +26,14 @@ sufficient:
 
   ```
   sudo apt install libgirepository1.0-dev gcc libcairo2-dev pkg-config \
-    python3.7-dev gir1.2-gtk-3.0
+    python3-dev gir1.2-gtk-3.0
   ```
+  * Replace `python3-dev` with the appropriate version as needed.
 
-* Create and activate a virtualenv with Python 3.6.
+* Create and activate a virtualenv with Python 3.
 
   ```
-  python3.6 -m venv venv && source venv/bin/activate
+  python3 -m venv venv && source venv/bin/activate
   ```
 
 * Install the package into the virtualenv.
