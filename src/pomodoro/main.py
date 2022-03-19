@@ -46,6 +46,7 @@ def main():
     _ = get_logger()
     logger = logging.getLogger(__name__)
 
+    # TODO load options from a config file if available
     options = PomodoroOptions()
     logger.debug('Starting with options %s', options)
 
